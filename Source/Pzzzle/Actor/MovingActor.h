@@ -18,6 +18,9 @@ public:
 public:
 	UPROPERTY(EditAnyWhere)
 		float Speed;
+	UPROPERTY(EditAnyWhere, Meta = (MakeEditWidget = true))
+		FVector TargetLocation;
+
 
 protected:
 	void BeginPlay()override;

@@ -12,6 +12,7 @@ AMovingActor::AMovingActor()
 void AMovingActor::BeginPlay()
 {
 	Super::BeginPlay();
+
 	if (HasAuthority())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[C++]Code Running on Server Side..."));
@@ -30,8 +31,9 @@ void AMovingActor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	if (HasAuthority())	//code will on run server side then it will replicate to client side if SetReplicates(true) and SetReplicateMovement(true)
 	{
-		/*auto*/FVector Location = GetActorLocation();
-		Location += FVector(Speed * DeltaTime, 0, 0);
+		FVector Location{ GetActorLocation() };
+		FVector Direction{ (TargetLocation - Location).GetSafeNormal()};
+		Location += (Speed * DeltaTime * Direction);
 		SetActorLocation(Location);
 	};
 
