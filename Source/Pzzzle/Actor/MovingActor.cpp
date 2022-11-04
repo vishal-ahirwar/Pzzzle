@@ -24,6 +24,9 @@ void AMovingActor::BeginPlay()
 		UE_LOG(LogTemp, Warning, TEXT("[C++]Code Running on Client Side..."));
 	};
 
+	this->GlobalStartLocation = GetActorLocation();
+	this->GlobalTargetLocation = GetTransform().TransformPosition(this->TargetLocation);
+	this->LengthStart2Target = (this->GlobalTargetLocation - this->GlobalStartLocation).Size();
 
 };
 void AMovingActor::Tick(float DeltaTime)
@@ -31,11 +34,11 @@ void AMovingActor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	if (HasAuthority())	//code will on run server side then it will replicate to client side if SetReplicates(true) and SetReplicateMovement(true)
 	{
-		FVector Location{ GetActorLocation() };	 
-		FVector GlobalTargetLocation = GetTransform().TransformPosition(this->TargetLocation);
-		FVector Direction{ (GlobalTargetLocation - Location).GetSafeNormal()};
-		Location += (Speed * DeltaTime * Direction);
-		SetActorLocation(Location);
+		//FVector Location{ GetActorLocation() };	 
+		FVector Direction{ (this->GlobalTargetLocation - this->GlobalStartLocation).GetSafeNormal()};
+		FVector NewLocation = (Speed * DeltaTime * Direction)+GetActorLocation();
+		if ((NewLocation-GlobalStartLocation).Size()> this->LengthStart2Target)Swap(GlobalStartLocation, GlobalTargetLocation);
+		SetActorLocation(NewLocation);
 	};
 
 };

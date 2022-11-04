@@ -20,7 +20,10 @@ public:
 		float Speed;
 	UPROPERTY(EditAnyWhere, Meta = (MakeEditWidget = true))
 		FVector TargetLocation;
-
+private:
+	FVector GlobalStartLocation;
+	FVector GlobalTargetLocation;
+	float LengthStart2Target;
 
 protected:
 	void BeginPlay()override;
