@@ -31,8 +31,9 @@ void AMovingActor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	if (HasAuthority())	//code will on run server side then it will replicate to client side if SetReplicates(true) and SetReplicateMovement(true)
 	{
-		FVector Location{ GetActorLocation() };
-		FVector Direction{ (TargetLocation - Location).GetSafeNormal()};
+		FVector Location{ GetActorLocation() };	 
+		FVector GlobalTargetLocation = GetTransform().TransformPosition(this->TargetLocation);
+		FVector Direction{ (GlobalTargetLocation - Location).GetSafeNormal()};
 		Location += (Speed * DeltaTime * Direction);
 		SetActorLocation(Location);
 	};
