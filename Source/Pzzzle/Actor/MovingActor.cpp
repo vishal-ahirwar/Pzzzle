@@ -6,7 +6,7 @@
 AMovingActor::AMovingActor()
 {
 	PrimaryActorTick.bCanEverTick = true;//enable tick
-	this->Speed = 10.5f;
+	this->Speed = 190.5f;
 	SetMobility(EComponentMobility::Movable);
 };
 void AMovingActor::BeginPlay()
