@@ -5,14 +5,13 @@
 
 AMovingActor::AMovingActor()
 {
-	PrimaryActorTick.bCanEverTick = true;//enable tick
+	PrimaryActorTick.bCanEverTick = true;//enable 
 	this->Speed = 190.5f;
 	SetMobility(EComponentMobility::Movable);
 };
 void AMovingActor::BeginPlay()
 {
 	Super::BeginPlay();
-
 	if (HasAuthority())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[C++]Code Running on Server Side..."));
@@ -32,6 +31,9 @@ void AMovingActor::BeginPlay()
 void AMovingActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (this->ActiveTriggers > 0)
+	{
+
 	if (HasAuthority())	//code will on run server side then it will replicate to client side if SetReplicates(true) and SetReplicateMovement(true)
 	{
 		//FVector Location{ GetActorLocation() };	 
@@ -41,4 +43,17 @@ void AMovingActor::Tick(float DeltaTime)
 		SetActorLocation(NewLocation);
 	};
 
+	}
+
 };
+
+void AMovingActor::AddActiveTrigger()
+{
+	++this->ActiveTriggers;
+};
+
+void AMovingActor::RemoveActiveTrigger()
+{
+	if (this->ActiveTriggers > 0)--this->ActiveTriggers;
+};
+

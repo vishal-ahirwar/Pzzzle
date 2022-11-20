@@ -1,9 +1,8 @@
 // Copyright(c)2022 Vishal Ahirwar. All rights reserved.
 
-
 #include "PlatformTrigger.h"
 #include"Components/BoxComponent.h"
-
+#include"MovingActor.h"
 // Sets default values
 APlatformTrigger::APlatformTrigger()
 {
@@ -36,12 +35,19 @@ void APlatformTrigger::BeginOverlap(UPrimitiveComponent* OverlappedComponent,
 	bool bFromSweep,
 	const FHitResult& SweepResult)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Volume Activated..."));
-
+	//UE_LOG(LogTemp, Warning, TEXT("Volume Activated..."));
+	for (const auto& actor : this->Triggers)
+	{
+		if (actor != nullptr)actor->AddActiveTrigger();
+	};
 };
 void APlatformTrigger::EndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Volume Deactiveted!"));
+	//UE_LOG(LogTemp, Warning, TEXT("Volume Deactiveted!"));
+	for (const auto& actor : this->Triggers)
+	{
+		if (actor != nullptr)actor->RemoveActiveTrigger();
+	};
 };
 
 
