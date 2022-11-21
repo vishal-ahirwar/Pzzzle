@@ -3,6 +3,7 @@
 
 #include "PzzzleGameInstance.h"
 #include"Engine/Engine.h"
+
 UPzzzleGameInstance::UPzzzleGameInstance(const FObjectInitializer&ObjectInitializer)
 {
 	UE_LOG(LogTemp,Warning,TEXT("[constructor]Pzzle API Instace running..."))
@@ -27,5 +28,8 @@ void UPzzzleGameInstance::Join(const FString&Address)
 {
 	UEngine* Engine = GetEngine();
 	if (Engine == nullptr)return;
-	Engine->AddOnScreenDebugMessage(0, 2.5f, FColor::Green, FString("Joining Server..."));
+	APlayerController* Controller = GetFirstLocalPlayerController();
+	if (Controller == nullptr)return;
+	Controller->ClientTravel(Address,ETravelType::TRAVEL_Absolute);
+	Engine->AddOnScreenDebugMessage(0, 2.5f, FColor::Green, (Address));
 };

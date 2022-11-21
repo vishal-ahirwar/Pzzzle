@@ -6,16 +6,14 @@
 #include "Engine/GameInstance.h"
 #include "PzzzleGameInstance.generated.h"
 
-/**
- * 
- */
+
 UCLASS()
 class PZZZLE_API UPzzzleGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 protected:
 	UFUNCTION(Exec)
-	void Host();
+		void Host();
 
 	UFUNCTION(Exec)
 		void Join(const FString&Address);
