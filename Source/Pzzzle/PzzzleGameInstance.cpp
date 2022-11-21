@@ -1,18 +1,24 @@
-// Copyright(c)2022 Vishal Ahirwar. All rights reserved.
+	// Copyright(c)2022 Vishal Ahirwar. All rights reserved.
 
 
 #include "PzzzleGameInstance.h"
 #include"Engine/Engine.h"
+#include"UObject/ConstructorHelpers.h"
+#include"Actor/PlatformTrigger.h"
+#include"Blueprint/UserWidget.h"
 
 UPzzzleGameInstance::UPzzzleGameInstance(const FObjectInitializer&ObjectInitializer)
 {
-	UE_LOG(LogTemp,Warning,TEXT("[constructor]Pzzle API Instace running..."))
+	ConstructorHelpers::FClassFinder<UUserWidget> MenuClass(TEXT("'/Game/UI/MenuSystem/WP_menu'"));
+	if (MenuClass.Class == nullptr)return;
+	this->Menu = MenuClass.Class;
+//	UE_LOG(LogTemp,Warning,TEXT("Found Class %s"),*Menu->GetName())
 };
 
 void  UPzzzleGameInstance::Init()
 {
 	Super::Init();
-	UE_LOG(LogTemp,Warning,TEXT("[Init] Pzzle API instance running.."))
+	UE_LOG(LogTemp,Warning,TEXT("[Init] Found Menu Widget Class %s"),*this->Menu->GetName())
 }
 
 void UPzzzleGameInstance::Host()

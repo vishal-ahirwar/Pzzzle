@@ -21,5 +21,5 @@ public:
 	UPzzzleGameInstance(const FObjectInitializer&);
 	void Init()override;
 private:
-
+	TSubclassOf<class UUserWidget>Menu;
 };
