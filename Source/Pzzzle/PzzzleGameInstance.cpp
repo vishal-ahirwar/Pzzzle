@@ -1,5 +1,4 @@
-	// Copyright(c)2022 Vishal Ahirwar. All rights reserved.
-
+// Copyright(c)2022 Vishal Ahirwar. All rights reserved.
 
 #include "PzzzleGameInstance.h"
 #include"Engine/Engine.h"
@@ -38,4 +37,16 @@ void UPzzzleGameInstance::Join(const FString&Address)
 	if (Controller == nullptr)return;
 	Controller->ClientTravel(Address,ETravelType::TRAVEL_Absolute);
 	Engine->AddOnScreenDebugMessage(0, 2.5f, FColor::Green, (Address));
+};
+
+void UPzzzleGameInstance::LoadMenu()
+{
+	if (this->Menu == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("No Widget Class  /Game/UI/MenuSystem/"));
+		return;
+	};
+	UUserWidget*Widget=CreateWidget<UUserWidget>(this, this->Menu);
+	if (Widget != nullptr)
+		Widget->AddToViewport();
 };

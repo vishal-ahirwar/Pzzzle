@@ -13,6 +13,8 @@ class PZZZLE_API UPzzzleGameInstance : public UGameInstance
 	GENERATED_BODY()
 protected:
 	UFUNCTION(Exec)
+		void LoadMenu();
+	UFUNCTION(Exec)
 		void Host();
 
 	UFUNCTION(Exec)
