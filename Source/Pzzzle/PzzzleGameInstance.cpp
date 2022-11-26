@@ -17,7 +17,8 @@ UPzzzleGameInstance::UPzzzleGameInstance(const FObjectInitializer&ObjectInitiali
 void  UPzzzleGameInstance::Init()
 {
 	Super::Init();
-	UE_LOG(LogTemp,Warning,TEXT("[Init] Found Menu Widget Class %s"),*this->Menu->GetName())
+	UE_LOG(LogTemp, Warning, TEXT("[Init] Found Menu Widget Class %s"), *this->Menu->GetName())
+		this->PlayerController = GetFirstLocalPlayerController();
 }
 
 void UPzzzleGameInstance::Host()
@@ -33,9 +34,9 @@ void UPzzzleGameInstance::Join(const FString&Address)
 {
 	UEngine* Engine = GetEngine();
 	if (Engine == nullptr)return;
-	APlayerController* Controller = GetFirstLocalPlayerController();
-	if (Controller == nullptr)return;
-	Controller->ClientTravel(Address,ETravelType::TRAVEL_Absolute);
+//	APlayerController* Controller = GetFirstLocalPlayerController();
+	if (this->PlayerController == nullptr)return;
+	this->PlayerController->ClientTravel(Address,ETravelType::TRAVEL_Absolute);
 	Engine->AddOnScreenDebugMessage(0, 2.5f, FColor::Green, (Address));
 };
 
@@ -47,6 +48,12 @@ void UPzzzleGameInstance::LoadMenu()
 		return;
 	};
 	UUserWidget*Widget=CreateWidget<UUserWidget>(this, this->Menu);
+	this->PlayerController->bShowMouseCursor = true;
 	if (Widget != nullptr)
+	{
+
 		Widget->AddToViewport();
+		Widget->bIsFocusable = true;
+	};
+
 };

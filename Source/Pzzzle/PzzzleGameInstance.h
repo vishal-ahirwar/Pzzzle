@@ -12,7 +12,7 @@ class PZZZLE_API UPzzzleGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 protected:
-	UFUNCTION(Exec)
+	UFUNCTION(Exec,BluePrintCallable)
 		void LoadMenu();
 	UFUNCTION(Exec)
 		void Host();
@@ -24,4 +24,5 @@ public:
 	void Init()override;
 private:
 	TSubclassOf<class UUserWidget>Menu;
+	APlayerController* PlayerController{ nullptr };
 };
