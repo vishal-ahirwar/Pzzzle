@@ -23,15 +23,16 @@ private:
 		class UButton* Join;
 	UPROPERTY(meta = (BindWidget))
 		class UButton* Quit;
-
-
+	class IMenuInterface* MenuInterface;
+public:
+	void SetMenuInterface(class IMenuInterface*);
 private:
 	UFUNCTION()
 	void OnHost();
+	
 	UFUNCTION()
 	void OnJoin();
+
 	UFUNCTION()
 	void OnQuit();
-
-
 };

@@ -4,25 +4,29 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
+#include"MenuSystem/MenuInterface.h"
 #include "PzzzleGameInstance.generated.h"
 
 
 UCLASS()
-class PZZZLE_API UPzzzleGameInstance : public UGameInstance
+class PZZZLE_API UPzzzleGameInstance : public UGameInstance, public IMenuInterface
 {
 	GENERATED_BODY()
 protected:
-	UFUNCTION(Exec,BluePrintCallable)
+	UFUNCTION(Exec, BluePrintCallable)
 		void LoadMenu();
-	UFUNCTION(Exec)
-		void Host();
 
 	UFUNCTION(Exec)
-		void Join(const FString&Address);
+		void Host()override;
+
+	UFUNCTION(Exec)
+		void Join(const FString& Address);
+
+
 public:
 	UPzzzleGameInstance(const FObjectInitializer&);
 	void Init()override;
 private:
 	TSubclassOf<class UUserWidget>Menu;
-//	APlayerController* PlayerController{ nullptr };
+	//	APlayerController* PlayerController{ nullptr };
 };

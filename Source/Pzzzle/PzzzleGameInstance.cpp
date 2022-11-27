@@ -5,6 +5,7 @@
 #include"UObject/ConstructorHelpers.h"
 #include"Actor/PlatformTrigger.h"
 #include"Blueprint/UserWidget.h"
+#include"Widget/MainMenu.h"
 
 UPzzzleGameInstance::UPzzzleGameInstance(const FObjectInitializer&ObjectInitializer)
 {
@@ -26,6 +27,9 @@ void UPzzzleGameInstance::Host()
 	if (Engine == nullptr)return;
 	Engine->AddOnScreenDebugMessage(0, 2.5f, FColor::Black, FString("Hosting Game..."));
 	UWorld* World = GetWorld();
+	FInputModeGameOnly Mode;
+	Mode.SetConsumeCaptureMouseDown(true);
+	GetFirstLocalPlayerController()->SetInputMode(Mode);
 	World->ServerTravel("/Game/ThirdPersonCPP/Maps/ThirdPersonExampleMap?listen");
 };
 
@@ -47,16 +51,22 @@ void UPzzzleGameInstance::LoadMenu()
 		UE_LOG(LogTemp, Error, TEXT("No Widget Class  /Game/UI/MenuSystem/"));
 		return;
 	};
-	UUserWidget*Widget=CreateWidget<UUserWidget>(this, this->Menu);
+	UMainMenu*Widget=CreateWidget<UMainMenu>(this, this->Menu);
 	APlayerController* PlayerController = GetFirstLocalPlayerController();
 	if(PlayerController)
 		PlayerController->bShowMouseCursor = true;
 
 	if (Widget)
 	{
+		FInputModeUIOnly Mode;
+	/*	Mode.SetWidgetToFocus(this->Menu.Get());*/
+
+		Mode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+		PlayerController->SetInputMode(Mode);
 
 		Widget->AddToViewport();
 		Widget->bIsFocusable = true;
+		Widget->SetMenuInterface(this);
 	};
 
 };

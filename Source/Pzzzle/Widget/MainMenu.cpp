@@ -3,6 +3,8 @@
 
 #include "MainMenu.h"
 #include "Components/Button.h"
+#include"../MenuSystem/MenuInterface.h"
+#include "Kismet/GameplayStatics.h"
 bool UMainMenu::Initialize()
 {
 	bool Success = Super::Initialize();
@@ -16,18 +18,21 @@ bool UMainMenu::Initialize()
 
 	if (this->Quit != nullptr)
 		this->Quit->OnClicked.AddDynamic(this, &UMainMenu::OnQuit);
-
-
 	return true;
 };
 
 void UMainMenu::OnHost()
 {
+	if (this->MenuInterface != nullptr)
+		this->MenuInterface->Host();
 	UE_LOG(LogTemp,Warning,TEXT("Host button pressed!"))
 };
 
 void UMainMenu::OnJoin()
 {
+	//if (this->menuinterface != nullptr)
+	//	this->menuinterface->join();
+
 	UE_LOG(LogTemp,Warning,TEXT("Join button Pressed!"))
 };
 
@@ -36,4 +41,7 @@ void UMainMenu::OnQuit()
 	UE_LOG(LogTemp, Warning, TEXT("Quit button Pressed!"))
 };
 
-
+void UMainMenu::SetMenuInterface(IMenuInterface* MenuInterface_)
+{
+	this->MenuInterface = MenuInterface_;
+};
