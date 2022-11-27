@@ -24,5 +24,5 @@ public:
 	void Init()override;
 private:
 	TSubclassOf<class UUserWidget>Menu;
-	APlayerController* PlayerController{ nullptr };
+//	APlayerController* PlayerController{ nullptr };
 };

@@ -18,7 +18,6 @@ void  UPzzzleGameInstance::Init()
 {
 	Super::Init();
 	UE_LOG(LogTemp, Warning, TEXT("[Init] Found Menu Widget Class %s"), *this->Menu->GetName())
-		this->PlayerController = GetFirstLocalPlayerController();
 }
 
 void UPzzzleGameInstance::Host()
@@ -27,17 +26,18 @@ void UPzzzleGameInstance::Host()
 	if (Engine == nullptr)return;
 	Engine->AddOnScreenDebugMessage(0, 2.5f, FColor::Black, FString("Hosting Game..."));
 	UWorld* World = GetWorld();
-	World->ServerTravel("/Game/ThirdPersonCPP/Maps/ThirdPersonExampleMap");
+	World->ServerTravel("/Game/ThirdPersonCPP/Maps/ThirdPersonExampleMap?listen");
 };
 
 void UPzzzleGameInstance::Join(const FString&Address)
 {
 	UEngine* Engine = GetEngine();
-	if (Engine == nullptr)return;
-//	APlayerController* Controller = GetFirstLocalPlayerController();
-	if (this->PlayerController == nullptr)return;
-	this->PlayerController->ClientTravel(Address,ETravelType::TRAVEL_Absolute);
-	Engine->AddOnScreenDebugMessage(0, 2.5f, FColor::Green, (Address));
+//	if (Engine == nullptr)return;
+	APlayerController* PlayerController = GetFirstLocalPlayerController();
+	if (PlayerController == nullptr)return;
+PlayerController->ClientTravel(Address,ETravelType::TRAVEL_Absolute);
+	if(Engine)
+		Engine->AddOnScreenDebugMessage(0, 2.5f, FColor::Green, (Address));
 };
 
 void UPzzzleGameInstance::LoadMenu()
@@ -48,8 +48,11 @@ void UPzzzleGameInstance::LoadMenu()
 		return;
 	};
 	UUserWidget*Widget=CreateWidget<UUserWidget>(this, this->Menu);
-	this->PlayerController->bShowMouseCursor = true;
-	if (Widget != nullptr)
+	APlayerController* PlayerController = GetFirstLocalPlayerController();
+	if(PlayerController)
+		PlayerController->bShowMouseCursor = true;
+
+	if (Widget)
 	{
 
 		Widget->AddToViewport();
@@ -57,3 +60,5 @@ void UPzzzleGameInstance::LoadMenu()
 	};
 
 };
+
+
