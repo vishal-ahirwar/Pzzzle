@@ -24,9 +24,19 @@ private:
 	UPROPERTY(meta = (BindWidget))
 		class UButton* Quit;
 	UPROPERTY(meta = (BindWidget))
+		class UButton* Back;
+
+	UPROPERTY(meta = (BindWidget))
 		class UWidgetSwitcher* WidgetSwitcher;
 	UPROPERTY(meta = (BindWidget))
 		class UWidget* JoinMenu;
+
+	UPROPERTY(meta = (BindWidget))
+		class UWidget* MainMenu;
+	UPROPERTY(meta = (BindWidget))
+		class UEditableText* ip;
+	UPROPERTY(meta = (BindWidget))
+		class UButton* Join_1;
 
 	class IMenuInterface* MenuInterface;
 public:
@@ -40,4 +50,12 @@ private:
 
 	UFUNCTION()
 	void OnQuit();
+
+	UFUNCTION()
+		void OnBack();
+
+	UFUNCTION()
+		void JoinServer();
+
+
 };

@@ -4,6 +4,7 @@
 #include "MainMenu.h"
 #include "Components/Button.h"
 #include "Components/WidgetSwitcher.h"
+#include "Components/EditableText.h"
 #include"../MenuSystem/MenuInterface.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -21,6 +22,13 @@ bool UMainMenu::Initialize()
 
 	if (this->Quit != nullptr)
 		this->Quit->OnClicked.AddDynamic(this, &UMainMenu::OnQuit);
+
+	if (this->Back != nullptr)
+		this->Back->OnClicked.AddDynamic(this, &UMainMenu::OnBack);
+
+	if (this->Join_1 != nullptr)
+		this->Join_1->OnClicked.AddDynamic(this, &UMainMenu::JoinServer);
+
 	return true;
 };
 
@@ -49,3 +57,16 @@ void UMainMenu::SetMenuInterface(IMenuInterface* MenuInterface_)
 {
 	this->MenuInterface = MenuInterface_;
 };
+
+void UMainMenu::OnBack()
+{
+	if (this->WidgetSwitcher == nullptr || this->MainMenu==nullptr)return;
+	this->WidgetSwitcher->SetActiveWidget(this->MainMenu);
+};
+
+void UMainMenu::JoinServer()
+{
+	if (this->ip == nullptr)return;
+	UE_LOG(LogTemp,Warning,TEXT("Joining server at address %s"),*ip->GetText().ToString())
+};
+
