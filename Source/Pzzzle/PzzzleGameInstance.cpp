@@ -39,7 +39,10 @@ void UPzzzleGameInstance::Join(const FString&Address)
 //	if (Engine == nullptr)return;
 	APlayerController* PlayerController = GetFirstLocalPlayerController();
 	if (PlayerController == nullptr)return;
-PlayerController->ClientTravel(Address,ETravelType::TRAVEL_Absolute);
+	FInputModeGameOnly Mode;
+	Mode.SetConsumeCaptureMouseDown(true);
+	PlayerController->SetInputMode(Mode);
+	PlayerController->ClientTravel(Address,ETravelType::TRAVEL_Absolute);
 	if(Engine)
 		Engine->AddOnScreenDebugMessage(0, 2.5f, FColor::Green, (Address));
 };
