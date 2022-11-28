@@ -23,6 +23,11 @@ private:
 		class UButton* Join;
 	UPROPERTY(meta = (BindWidget))
 		class UButton* Quit;
+	UPROPERTY(meta = (BindWidget))
+		class UWidgetSwitcher* WidgetSwitcher;
+	UPROPERTY(meta = (BindWidget))
+		class UWidget* JoinMenu;
+
 	class IMenuInterface* MenuInterface;
 public:
 	void SetMenuInterface(class IMenuInterface*);
@@ -31,7 +36,7 @@ private:
 	void OnHost();
 	
 	UFUNCTION()
-	void OnJoin();
+	void OpenJoinMenu();
 
 	UFUNCTION()
 	void OnQuit();

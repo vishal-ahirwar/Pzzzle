@@ -3,8 +3,11 @@
 
 #include "MainMenu.h"
 #include "Components/Button.h"
+#include "Components/WidgetSwitcher.h"
 #include"../MenuSystem/MenuInterface.h"
 #include "Kismet/GameplayStatics.h"
+
+
 bool UMainMenu::Initialize()
 {
 	bool Success = Super::Initialize();
@@ -14,7 +17,7 @@ bool UMainMenu::Initialize()
 	this->Host->OnClicked.AddDynamic(this,&UMainMenu::OnHost);
 
 	if (this->Join != nullptr)
-		this->Join->OnClicked.AddDynamic(this,&UMainMenu::OnJoin);
+		this->Join->OnClicked.AddDynamic(this,&UMainMenu::OpenJoinMenu);
 
 	if (this->Quit != nullptr)
 		this->Quit->OnClicked.AddDynamic(this, &UMainMenu::OnQuit);
@@ -28,10 +31,11 @@ void UMainMenu::OnHost()
 	UE_LOG(LogTemp,Warning,TEXT("Host button pressed!"))
 };
 
-void UMainMenu::OnJoin()
+void UMainMenu::OpenJoinMenu()
 {
-	//if (this->menuinterface != nullptr)
-	//	this->menuinterface->join();
+	if (this->WidgetSwitcher == nullptr|| this->JoinMenu==nullptr)return;
+
+	this->WidgetSwitcher->SetActiveWidget(this->JoinMenu);
 
 	UE_LOG(LogTemp,Warning,TEXT("Join button Pressed!"))
 };
