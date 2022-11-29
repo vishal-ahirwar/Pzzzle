@@ -8,6 +8,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
+#include"Blueprint/UserWidget.h"
+#include"UObject/ConstructorHelpers.h"
 
 //////////////////////////////////////////////////////////////////////////
 // APzzzleCharacter
@@ -43,8 +45,13 @@ APzzzleCharacter::APzzzleCharacter()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
+
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
+	ConstructorHelpers::FClassFinder<UUserWidget> MenuClass(TEXT("'/Game/UI/MenuSystem/WP_exit'"));
+	if (MenuClass.Class == nullptr)return;
+	this->Menu = MenuClass.Class;
+
 };
 void APzzzleCharacter::BeginPlay()
 {
@@ -80,6 +87,7 @@ void APzzzleCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 
 	// VR headset functionality
 	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &APzzzleCharacter::OnResetVR);
+	PlayerInputComponent->BindAction("exit", IE_Pressed, this, &APzzzleCharacter::OnEsc);
 }
 
 
@@ -126,15 +134,29 @@ void APzzzleCharacter::MoveForward(float Value)
 
 void APzzzleCharacter::MoveRight(float Value)
 {
-	if ( (Controller != NULL) && (Value != 0.0f) )
+	if ((Controller != NULL) && (Value != 0.0f))
 	{
 		// find out which way is right
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
-	
+
 		// get right vector 
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 		// add movement in that direction
 		AddMovementInput(Direction, Value);
 	}
-}
+};
+
+void APzzzleCharacter::OnEsc()
+{
+	UUserWidget* Widget = CreateWidget<UUserWidget>(GetGameInstance(), this->Menu);
+	APlayerController*PlayerController_=GetWorld()->GetFirstPlayerController();
+	if (PlayerController_)
+	{
+		PlayerController_->bShowMouseCursor = true;
+		if (Widget)Widget->AddToViewport();
+	};
+
+
+};
+
