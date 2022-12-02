@@ -56,6 +56,7 @@ APzzzleCharacter::APzzzleCharacter()
 void APzzzleCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	this->Widget = CreateWidget<UUserWidget>(GetGameInstance(), this->Menu);
 	
 };
 
@@ -149,14 +150,41 @@ void APzzzleCharacter::MoveRight(float Value)
 
 void APzzzleCharacter::OnEsc()
 {
-	UUserWidget* Widget = CreateWidget<UUserWidget>(GetGameInstance(), this->Menu);
-	APlayerController*PlayerController_=GetWorld()->GetFirstPlayerController();
-	if (PlayerController_)
+	if (this->Is==false)
 	{
-		PlayerController_->bShowMouseCursor = true;
-		if (Widget)Widget->AddToViewport();
-	};
+		APlayerController* PlayerController_ = GetWorld()->GetFirstPlayerController();
+		if (PlayerController_)
+		{
+			PlayerController_->bShowMouseCursor = true;
+			FInputModeUIOnly mode;
+			PlayerController_->SetInputMode(mode);
+			if (Widget)Widget->AddToViewport();
+		};
+		this->Is = true;
+	}
+	else
+	{
+		if (Widget)
+		{
+			Widget->RemoveFromViewport();
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Widget==nullptr"))
+		};
+
+		this->Is = false;
+	}
 
 
 };
+
+void APzzzleCharacter::RemoveInGameMenu()const
+{
+	if (this->Widget != nullptr)
+	{
+		Widget->RemoveFromViewport();
+	};
+};
+
 

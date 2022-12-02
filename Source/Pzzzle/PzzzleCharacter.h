@@ -72,9 +72,13 @@ public:
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
+	void RemoveInGameMenu()const;
 private:
 	TSubclassOf<class UUserWidget>Menu;
 	//TODO : load this widget at runtime
+	bool Is{ false };
+
+	class UUserWidget* Widget{ nullptr };
 
 };
 

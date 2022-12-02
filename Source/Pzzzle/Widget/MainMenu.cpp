@@ -20,14 +20,17 @@ bool UMainMenu::Initialize()
 	if (this->Join != nullptr)
 		this->Join->OnClicked.AddDynamic(this,&UMainMenu::OpenJoinMenu);
 
-	if (this->Quit != nullptr)
-		this->Quit->OnClicked.AddDynamic(this, &UMainMenu::OnQuit);
+	//if (this->Quit != nullptr)
+	//	this->Quit->OnClicked.AddDynamic(this, &UMainMenu::OnQuit);
 
 	if (this->Back != nullptr)
 		this->Back->OnClicked.AddDynamic(this, &UMainMenu::OnBack);
 
 	if (this->Join_1 != nullptr)
 		this->Join_1->OnClicked.AddDynamic(this, &UMainMenu::JoinServer);
+
+	if (this->QuitGame != nullptr)
+		this->QuitGame->OnClicked.AddDynamic(this, &UMainMenu::FQuit);
 
 	return true;
 };
@@ -48,10 +51,10 @@ void UMainMenu::OpenJoinMenu()
 	UE_LOG(LogTemp,Warning,TEXT("Join button Pressed!"))
 };
 
-void UMainMenu::OnQuit()
-{
-	UE_LOG(LogTemp, Warning, TEXT("Quit button Pressed!"))
-};
+//void UMainMenu::OnQuit()
+//{
+//	UE_LOG(LogTemp, Warning, TEXT("Quit button Pressed!"))
+//};
 
 void UMainMenu::SetMenuInterface(IMenuInterface* MenuInterface_)
 {
@@ -72,3 +75,8 @@ void UMainMenu::JoinServer()
 	UE_LOG(LogTemp,Warning,TEXT("Joining server at address %s"),*ip->GetText().ToString())
 };
 
+void UMainMenu::FQuit()
+{
+	UE_LOG(LogTemp, Error, TEXT("FQuit Pressed!"))
+		GetGameInstance()->GetFirstLocalPlayerController()->ConsoleCommand(TEXT("quit"));
+};

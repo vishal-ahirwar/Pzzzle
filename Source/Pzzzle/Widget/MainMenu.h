@@ -18,11 +18,13 @@ protected:
 	bool Initialize()override;
 private:
 	UPROPERTY(meta = (BindWidget))
+		class UButton* QuitGame;
+	UPROPERTY(meta = (BindWidget))
 		class UButton* Host;
 	UPROPERTY(meta = (BindWidget))
 		class UButton* Join;
-	UPROPERTY(meta = (BindWidget))
-		class UButton* Quit;
+	//UPROPERTY(meta = (BindWidget))
+	//	class UButton* Quit;
 	UPROPERTY(meta = (BindWidget))
 		class UButton* Back;
 
@@ -48,14 +50,17 @@ private:
 	UFUNCTION()
 	void OpenJoinMenu();
 
-	UFUNCTION()
-	void OnQuit();
+	//UFUNCTION()
+	//void OnQuit();
 
 	UFUNCTION()
 		void OnBack();
 
 	UFUNCTION()
 		void JoinServer();
+	UFUNCTION()
+		void FQuit();
+
 
 
 };
