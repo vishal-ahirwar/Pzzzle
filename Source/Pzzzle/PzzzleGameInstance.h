@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
 #include"MenuSystem/MenuInterface.h"
+#include"OnlineSubsystem.h"
 #include "PzzzleGameInstance.generated.h"
 
 
@@ -22,11 +23,16 @@ protected:
 	UFUNCTION(Exec)
 		void Join(const FString& Address)override;
 
-
+	void OnCreateSessionComplete( FName,  bool);
+	void CreateSession();
+	void OnDestroySessionComplete(FName, bool);
 public:
 	UPzzzleGameInstance(const FObjectInitializer&);
 	void Init()override;
+
 private:
 	TSubclassOf<class UUserWidget>Menu;
+	IOnlineSessionPtr SessionInterface;
+	
 	//	APlayerController* PlayerController{ nullptr };
 };
