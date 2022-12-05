@@ -26,12 +26,14 @@ protected:
 	void OnCreateSessionComplete( FName,  bool);
 	void CreateSession();
 	void OnDestroySessionComplete(FName, bool);
+	void OnSessionSearchComplete(bool);
 public:
 	UPzzzleGameInstance(const FObjectInitializer&);
 	void Init()override;
 
 private:
 	TSubclassOf<class UUserWidget>Menu;
+	TSharedPtr<class FOnlineSessionSearch>SessionSearch;
 	IOnlineSessionPtr SessionInterface;
 	
 	//	APlayerController* PlayerController{ nullptr };
