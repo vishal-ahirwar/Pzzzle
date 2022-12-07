@@ -35,11 +35,14 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 		class UWidget* MainMenu;
-	UPROPERTY(meta = (BindWidget))
-		class UEditableText* ip;
+	//UPROPERTY(meta = (BindWidget))
+	//	class UEditableText* ip;
 	UPROPERTY(meta = (BindWidget))
 		class UButton* Join_1;
-
+public:
+	UPROPERTY(meta = (BindWidget))
+		class UScrollBox* ServerList;
+private:
 	class IMenuInterface* MenuInterface;
 public:
 	void SetMenuInterface(class IMenuInterface*);

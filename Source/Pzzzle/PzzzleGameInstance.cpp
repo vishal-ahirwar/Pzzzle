@@ -9,14 +9,22 @@
 #include"OnlineSubsystem.h"
 #include"OnlineSessionSettings.h"
 #include"Interfaces/OnlineSessionInterface.h"
+#include"./MenuSystem/ServerRow.h"
+#include"Components/TextBlock.h"
+#include"Components/ScrollBox.h"
+//#include"Blueprint/TextBlock.h"
 
 const static FName SESSION_NAME = TEXT("Session Main");
 
 UPzzzleGameInstance::UPzzzleGameInstance(const FObjectInitializer& ObjectInitializer)
 {
-	ConstructorHelpers::FClassFinder<UUserWidget> MenuClass(TEXT("'/Game/UI/MenuSystem/WP_menu'"));
-	if (MenuClass.Class == nullptr)return;
-	this->Menu = MenuClass.Class;
+	ConstructorHelpers::FClassFinder<UUserWidget> MenuWidgetClass(TEXT("'/Game/UI/MenuSystem/WP_menu'"));
+	ConstructorHelpers::FClassFinder<UUserWidget> ServerWidgetClass(TEXT("'/Game/UI/MenuSystem/WP_Server'"));
+	if (MenuWidgetClass.Class == nullptr)return;
+	this->Menu = MenuWidgetClass.Class;
+
+	if (ServerWidgetClass.Class == nullptr)return;
+	this->ServerWidget = ServerWidgetClass.Class;
 	//	UE_LOG(LogTemp,Warning,TEXT("Found Class %s"),*Menu->GetName())
 };
 
@@ -31,6 +39,7 @@ void  UPzzzleGameInstance::Init()
 	}
 	else
 	{
+		 Widget = CreateWidget<UMainMenu>(this, this->Menu);
 		UE_LOG(LogTemp, Warning, TEXT("[Init] Subsystem  %s"), *System->GetSubsystemName().ToString())
 			SessionInterface = System->GetSessionInterface();
 		if (SessionInterface)
@@ -75,16 +84,23 @@ void UPzzzleGameInstance::Host()
 
 void UPzzzleGameInstance::Join(const FString& Address)
 {
-	UEngine* Engine = GetEngine();
-	//	if (Engine == nullptr)return;
-	APlayerController* PlayerController = GetFirstLocalPlayerController();
-	if (PlayerController == nullptr)return;
-	FInputModeGameOnly Mode;
-	Mode.SetConsumeCaptureMouseDown(true);
-	PlayerController->SetInputMode(Mode);
-	PlayerController->ClientTravel(Address, ETravelType::TRAVEL_Absolute);
-	if (Engine)
-		Engine->AddOnScreenDebugMessage(0, 2.5f, FColor::Green, (Address));
+	UServerRow* Server = CreateWidget<UServerRow>(this, this->ServerWidget);
+	if (Server == nullptr)return;
+	Server->Text->SetText(FText::FromString("My Server"));
+	if (Widget == nullptr)return;
+	Widget->ServerList->AddChild(Server);
+
+	UE_LOG(LogTemp,Error,TEXT("Joining aka addign new child widget to scroll box"))
+	//UEngine* Engine = GetEngine();
+	////	if (Engine == nullptr)return;
+	//APlayerController* PlayerController = GetFirstLocalPlayerController();
+	//if (PlayerController == nullptr)return;
+	//FInputModeGameOnly Mode;
+	//Mode.SetConsumeCaptureMouseDown(true);
+	//PlayerController->SetInputMode(Mode);
+	//PlayerController->ClientTravel(Address, ETravelType::TRAVEL_Absolute);
+	//if (Engine)
+	//	Engine->AddOnScreenDebugMessage(0, 2.5f, FColor::Green, (Address));
 };
 
 void UPzzzleGameInstance::LoadMenu()
@@ -94,7 +110,7 @@ void UPzzzleGameInstance::LoadMenu()
 		UE_LOG(LogTemp, Error, TEXT("No Widget Class  /Game/UI/MenuSystem/"));
 		return;
 	};
-	UMainMenu* Widget = CreateWidget<UMainMenu>(this, this->Menu);
+	
 	APlayerController* PlayerController = GetFirstLocalPlayerController();
 	if (PlayerController)
 		PlayerController->bShowMouseCursor = true;
@@ -110,7 +126,11 @@ void UPzzzleGameInstance::LoadMenu()
 		Widget->AddToViewport();
 		Widget->bIsFocusable = true;
 		Widget->SetMenuInterface(this);
-	};
+	}
+	else
+	{
+		UE_LOG(LogTemp,Error,TEXT("ERROR in LoadMenu() function failed to load Widget"))
+	}
 
 };
 

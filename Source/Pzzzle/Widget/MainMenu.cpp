@@ -69,10 +69,10 @@ void UMainMenu::OnBack()
 
 void UMainMenu::JoinServer()
 {
-	if (this->ip == nullptr)return;
+	//if (this->ip == nullptr)return;
 	if (this->MenuInterface == nullptr)return;
-	this->MenuInterface->Join(this->ip->GetText().ToString());
-	UE_LOG(LogTemp,Warning,TEXT("Joining server at address %s"),*ip->GetText().ToString())
+	this->MenuInterface->Join(/*this->ip->GetText().ToString()*/"");
+	//UE_LOG(LogTemp,Warning,TEXT("Joining server at address %s"),*ip->GetText().ToString())
 };
 
 void UMainMenu::FQuit()
