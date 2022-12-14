@@ -59,7 +59,13 @@ void UMainMenu::OpenJoinMenu()
 
 	this->WidgetSwitcher->SetActiveWidget(this->JoinMenu);
 
-	UE_LOG(LogTemp,Warning,TEXT("Join button Pressed!"))
+	UE_LOG(LogTemp, Warning, TEXT("Join button Pressed!"))
+
+		if (this->MenuInterface != nullptr)
+		{
+			this->MenuInterface->RefreshServerList();
+		};
+
 };
 
 //void UMainMenu::OnQuit()

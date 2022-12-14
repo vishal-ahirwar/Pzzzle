@@ -44,15 +44,7 @@ void  UPzzzleGameInstance::Init()
 				SessionInterface->OnCreateSessionCompleteDelegates.AddUObject(this, &UPzzzleGameInstance::OnCreateSessionComplete);
 			SessionInterface->OnDestroySessionCompleteDelegates.AddUObject(this, &UPzzzleGameInstance::OnDestroySessionComplete);
 			SessionInterface->OnFindSessionsCompleteDelegates.AddUObject(this, &UPzzzleGameInstance::OnSessionSearchComplete);
-			this->SessionSearch = MakeShareable(new FOnlineSessionSearch);
-			if (SessionSearch.IsValid())
-			{
-				SessionSearch->bIsLanQuery = true;
-
-				UE_LOG(LogTemp, Error, TEXT("Session Searching Started..."))
-					SessionInterface->FindSessions(0, SessionSearch.ToSharedRef());
-
-			}
+		
 		}
 	}
 }
@@ -76,6 +68,18 @@ void UPzzzleGameInstance::Host()
 
 	}
 
+};
+void UPzzzleGameInstance::RefreshServerList()
+{
+	this->SessionSearch = MakeShareable(new FOnlineSessionSearch);
+	if (SessionSearch.IsValid())
+	{
+		SessionSearch->bIsLanQuery = true;
+
+		UE_LOG(LogTemp, Error, TEXT("Session Searching Started..."))
+			SessionInterface->FindSessions(0, SessionSearch.ToSharedRef());
+
+	}
 };
 
 void UPzzzleGameInstance::Join(const FString& Address)
@@ -177,16 +181,20 @@ void UPzzzleGameInstance::OnDestroySessionComplete(FName SessionName, bool Succe
 
 void UPzzzleGameInstance::OnSessionSearchComplete(bool Success)
 {
-	if (Success && this->SessionSearch.IsValid())
+	if (Success && this->SessionSearch.IsValid()&&this->Widget!=nullptr)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Session Searching Done!"))
 			TArray<FOnlineSessionSearchResult>Results = this->SessionSearch->SearchResults;
-		for (const auto&Result : Results)
+		TArray<FString>ServerNames;
+		for (const auto& Result : Results)
 		{
 
 			UE_LOG(LogTemp, Error, TEXT("Session Found : %s"), *Result.GetSessionIdStr())
+				ServerNames.Add(Result.GetSessionIdStr());
 
-		}
+		};
+
+		this->Widget->SetServerList(ServerNames);
 	}
 
 };

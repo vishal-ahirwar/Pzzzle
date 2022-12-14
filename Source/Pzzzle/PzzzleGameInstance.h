@@ -31,6 +31,7 @@ public:
 	UPzzzleGameInstance(const FObjectInitializer&);
 	void Init()override;
 
+	void RefreshServerList()override;
 private:
 	class UMainMenu* Widget;
 	TSubclassOf<class UUserWidget>Menu;
