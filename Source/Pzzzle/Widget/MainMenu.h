@@ -13,7 +13,10 @@ UCLASS()
 class PZZZLE_API UMainMenu : public UUserWidget
 {
 	GENERATED_BODY()
+public:
+	UMainMenu(const FObjectInitializer&);
 
+	void SetServerList(const TArray<FString>&);
 protected:
 	bool Initialize()override;
 private:
@@ -63,7 +66,8 @@ private:
 		void JoinServer();
 	UFUNCTION()
 		void FQuit();
+private:
 
-
+	TSubclassOf<class UUserWidget>ServerWidget;
 
 };

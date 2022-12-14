@@ -34,7 +34,7 @@ public:
 private:
 	class UMainMenu* Widget;
 	TSubclassOf<class UUserWidget>Menu;
-	TSubclassOf<class UUserWidget>ServerWidget;
+
 	TSharedPtr<class FOnlineSessionSearch>SessionSearch;
 	IOnlineSessionPtr SessionInterface;
 	

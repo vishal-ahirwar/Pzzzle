@@ -5,13 +5,24 @@
 #include "Components/Button.h"
 #include "Components/WidgetSwitcher.h"
 #include "Components/EditableText.h"
+#include "Components/EditableText.h"
 #include"../MenuSystem/MenuInterface.h"
 #include "Kismet/GameplayStatics.h"
+#include"../MenuSystem/ServerRow.h"
+#include"Components/ScrollBox.h"
+#include"Components/TextBlock.h"
 
+UMainMenu::UMainMenu(const FObjectInitializer&Object):Super(Object)
+{
+
+	ConstructorHelpers::FClassFinder<UUserWidget> ServerWidgetClass(TEXT("'/Game/UI/MenuSystem/WP_Server'"));
+	if (ServerWidgetClass.Class)this->ServerWidget = ServerWidgetClass.Class;
+};
 
 bool UMainMenu::Initialize()
 {
 	bool Success = Super::Initialize();
+
 	if (!Success)return false;
 	
 	if(this->Host!=nullptr)
@@ -67,10 +78,28 @@ void UMainMenu::OnBack()
 	this->WidgetSwitcher->SetActiveWidget(this->MainMenu);
 };
 
+void UMainMenu::SetServerList(const TArray<FString>& ServerNames)
+{
+	this->ServerList->ClearChildren();
+	for (const FString& Name : ServerNames)
+	{
+		UServerRow* ServerWid = CreateWidget<UServerRow>(this, this->ServerWidget);
+		if (ServerWid)
+		{
+			ServerWid->Text->SetText(FText::FromString(Name));
+			this->ServerList->AddChild(ServerWid);
+		};
+
+	};
+
+}
 void UMainMenu::JoinServer()
 {
 	//if (this->ip == nullptr)return;
+	//ConstructorHelpers::FClassFinder<UUserWidget> ServerWidgetClass(TEXT("'/Game/UI/MenuSystem/WP_Server'"));
+	//if (ServerWidgetClass.Class)this->ServerWidget = ServerWidgetClass.Class;
 	if (this->MenuInterface == nullptr)return;
+
 	this->MenuInterface->Join(/*this->ip->GetText().ToString()*/"");
 	//UE_LOG(LogTemp,Warning,TEXT("Joining server at address %s"),*ip->GetText().ToString())
 };
