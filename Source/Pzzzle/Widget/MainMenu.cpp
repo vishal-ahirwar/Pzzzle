@@ -104,6 +104,17 @@ void UMainMenu::JoinServer()
 	//if (this->ip == nullptr)return;
 	//ConstructorHelpers::FClassFinder<UUserWidget> ServerWidgetClass(TEXT("'/Game/UI/MenuSystem/WP_Server'"));
 	//if (ServerWidgetClass.Class)this->ServerWidget = ServerWidgetClass.Class;
+	if (this->ServerWidget)
+	{
+		UServerRow*Widget = CreateWidget<UServerRow>(GetWorld(),ServerWidget);
+		this->ServerList->ClearChildren();
+		if (Widget)
+		{
+			Widget->Text->SetText(FText::FromString("Searching ..."));
+			ServerList->AddChild(Widget);
+		}
+
+	}
 	if (this->MenuInterface == nullptr)return;
 
 	this->MenuInterface->Join(/*this->ip->GetText().ToString()*/"");

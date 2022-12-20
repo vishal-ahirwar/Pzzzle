@@ -3,7 +3,7 @@
 #include "PzzzleGameInstance.h"
 #include"Engine/Engine.h"
 #include"UObject/ConstructorHelpers.h"
-#include"Actor/PlatformTrigger.h"
+#include"Actor/PlatformTrigger.h"																					
 #include"Blueprint/UserWidget.h"
 #include"Widget/MainMenu.h"
 #include"OnlineSubsystem.h"
@@ -14,12 +14,15 @@
 
 const static FName SESSION_NAME = TEXT("Session Main");
 
-UPzzzleGameInstance::UPzzzleGameInstance(const FObjectInitializer& ObjectInitializer)
+UPzzzleGameInstance::UPzzzleGameInstance(const FObjectInitializer& ObjectInitializer):Super(ObjectInitializer)
 {
 	ConstructorHelpers::FClassFinder<UUserWidget> MenuWidgetClass(TEXT("'/Game/UI/MenuSystem/WP_menu'"));
 
 	if (MenuWidgetClass.Class == nullptr)return;
 	this->Menu = MenuWidgetClass.Class;
+
+
+	
 
 	//	UE_LOG(LogTemp,Warning,TEXT("Found Class %s"),*Menu->GetName())
 };
@@ -28,6 +31,17 @@ void  UPzzzleGameInstance::Init()
 {
 	Super::Init();
 	IOnlineSubsystem* System = IOnlineSubsystem::Get();
+
+	UE_LOG(LogTemp,Error,TEXT("Init Called!"))
+	//if (Widget)
+	//{
+	//	Widget->AddToViewport();
+	//	Widget->SetMenuInterface(this);
+	//};
+	//if (!Widget)
+	//{
+	//	UE_LOG(LogTemp,Warning,TEXT("Widget : MainMenu is not CreatedYey"))
+	//}
 	if (System == nullptr)
 	{
 		UE_LOG(LogTemp, Error, TEXT("No Subsystem Found!"))
@@ -35,7 +49,6 @@ void  UPzzzleGameInstance::Init()
 	}
 	else
 	{
-		 Widget = CreateWidget<UMainMenu>(this, this->Menu);
 		UE_LOG(LogTemp, Warning, TEXT("[Init] Subsystem  %s"), *System->GetSubsystemName().ToString())
 			SessionInterface = System->GetSessionInterface();
 		if (SessionInterface)
@@ -84,12 +97,12 @@ void UPzzzleGameInstance::RefreshServerList()
 
 void UPzzzleGameInstance::Join(const FString& Address)
 {
-	if (this->Widget != nullptr)
-	{
-		this->Widget->SetServerList({"Server 1", "Server 2","Server 3","Server 4"
-	});
-	}
-	UE_LOG(LogTemp,Error,TEXT("Joining aka addign new child widget to scroll box"))
+	//if (this->Widget != nullptr)
+	//{
+	//	this->Widget->SetServerList({"Server 1", "Server 2","Server 3","Server 4"
+	//});
+	//}
+	//UE_LOG(LogTemp,Error,TEXT("Joining aka addign new child widget to scroll box"))
 	UEngine* Engine = GetEngine();
 		if (Engine == nullptr)return;
 	APlayerController* PlayerController = GetFirstLocalPlayerController();
@@ -104,6 +117,7 @@ void UPzzzleGameInstance::Join(const FString& Address)
 
 void UPzzzleGameInstance::LoadMenu()
 {
+	Widget = CreateWidget<UMainMenu>(GetWorld(), this->Menu);
 	if (this->Menu == nullptr)
 	{
 		UE_LOG(LogTemp, Error, TEXT("No Widget Class  /Game/UI/MenuSystem/"));
@@ -114,17 +128,21 @@ void UPzzzleGameInstance::LoadMenu()
 	if (PlayerController)
 		PlayerController->bShowMouseCursor = true;
 
-	if (Widget)
+	if (Widget!=nullptr)
 	{
 		FInputModeUIOnly Mode;
 		/*	Mode.SetWidgetToFocus(this->Menu.Get());*/
 
 		Mode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+		if(PlayerController)
 		PlayerController->SetInputMode(Mode);
 		if (Widget)
 		{
-			Widget->AddToViewport();
+			if(Widget)
 			Widget->bIsFocusable = true;
+			if(Widget)
+			Widget->AddToViewport();
+			if(Widget)
 			Widget->SetMenuInterface(this);
 		}
 
