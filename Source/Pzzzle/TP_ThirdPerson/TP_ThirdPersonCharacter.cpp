@@ -1,6 +1,6 @@
-// Copyright Vishal Ahirwar, Inc. All Rights Reserved.
+// Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "PzzzleCharacter.h"
+#include "TP_ThirdPersonCharacter.h"
 #include "HeadMountedDisplayFunctionLibrary.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -8,13 +8,11 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
-#include"Blueprint/UserWidget.h"
-#include"UObject/ConstructorHelpers.h"
 
 //////////////////////////////////////////////////////////////////////////
-// APzzzleCharacter
+// ATP_ThirdPersonCharacter
 
-APzzzleCharacter::APzzzleCharacter()
+ATP_ThirdPersonCharacter::ATP_ThirdPersonCharacter()
 {
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -45,83 +43,76 @@ APzzzleCharacter::APzzzleCharacter()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
-
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
-	ConstructorHelpers::FClassFinder<UUserWidget> MenuClass(TEXT("'/Game/Widget/WBP_exit'"));
-	if (MenuClass.Class == nullptr)return;
-	this->Menu = MenuClass.Class;
-
-};
-void APzzzleCharacter::BeginPlay()
-{
-	Super::BeginPlay();
-	this->Widget = CreateWidget<UUserWidget>(GetGameInstance(), this->Menu);
-	
-};
-
+}
 
 //////////////////////////////////////////////////////////////////////////
 // Input
 
-void APzzzleCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
+void ATP_ThirdPersonCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
 	// Set up gameplay key bindings
 	check(PlayerInputComponent);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
-	PlayerInputComponent->BindAxis("MoveForward", this, &APzzzleCharacter::MoveForward);
-	PlayerInputComponent->BindAxis("MoveRight", this, &APzzzleCharacter::MoveRight);
+	PlayerInputComponent->BindAxis("MoveForward", this, &ATP_ThirdPersonCharacter::MoveForward);
+	PlayerInputComponent->BindAxis("MoveRight", this, &ATP_ThirdPersonCharacter::MoveRight);
 
 	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
 	// "turn" handles devices that provide an absolute delta, such as a mouse.
 	// "turnrate" is for devices that we choose to treat as a rate of change, such as an analog joystick
 	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
-	PlayerInputComponent->BindAxis("TurnRate", this, &APzzzleCharacter::TurnAtRate);
+	PlayerInputComponent->BindAxis("TurnRate", this, &ATP_ThirdPersonCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
-	PlayerInputComponent->BindAxis("LookUpRate", this, &APzzzleCharacter::LookUpAtRate);
+	PlayerInputComponent->BindAxis("LookUpRate", this, &ATP_ThirdPersonCharacter::LookUpAtRate);
 
 	// handle touch devices
-	PlayerInputComponent->BindTouch(IE_Pressed, this, &APzzzleCharacter::TouchStarted);
-	PlayerInputComponent->BindTouch(IE_Released, this, &APzzzleCharacter::TouchStopped);
+	PlayerInputComponent->BindTouch(IE_Pressed, this, &ATP_ThirdPersonCharacter::TouchStarted);
+	PlayerInputComponent->BindTouch(IE_Released, this, &ATP_ThirdPersonCharacter::TouchStopped);
 
 	// VR headset functionality
-	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &APzzzleCharacter::OnResetVR);
-	PlayerInputComponent->BindAction("exit", IE_Pressed, this, &APzzzleCharacter::OnEsc);
+	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &ATP_ThirdPersonCharacter::OnResetVR);
 }
 
 
-void APzzzleCharacter::OnResetVR()
+void ATP_ThirdPersonCharacter::OnResetVR()
 {
+	// If TP_ThirdPerson is added to a project via 'Add Feature' in the Unreal Editor the dependency on HeadMountedDisplay in TP_ThirdPerson.Build.cs is not automatically propagated
+	// and a linker error will result.
+	// You will need to either:
+	//		Add "HeadMountedDisplay" to [YourProject].Build.cs PublicDependencyModuleNames in order to build successfully (appropriate if supporting VR).
+	// or:
+	//		Comment or delete the call to ResetOrientationAndPosition below (appropriate if not supporting VR)
 	UHeadMountedDisplayFunctionLibrary::ResetOrientationAndPosition();
 }
 
-void APzzzleCharacter::TouchStarted(ETouchIndex::Type FingerIndex, FVector Location)
+void ATP_ThirdPersonCharacter::TouchStarted(ETouchIndex::Type FingerIndex, FVector Location)
 {
 		Jump();
 }
 
-void APzzzleCharacter::TouchStopped(ETouchIndex::Type FingerIndex, FVector Location)
+void ATP_ThirdPersonCharacter::TouchStopped(ETouchIndex::Type FingerIndex, FVector Location)
 {
 		StopJumping();
 }
 
-void APzzzleCharacter::TurnAtRate(float Rate)
+void ATP_ThirdPersonCharacter::TurnAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
 	AddControllerYawInput(Rate * BaseTurnRate * GetWorld()->GetDeltaSeconds());
 }
 
-void APzzzleCharacter::LookUpAtRate(float Rate)
+void ATP_ThirdPersonCharacter::LookUpAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
 }
 
-void APzzzleCharacter::MoveForward(float Value)
+void ATP_ThirdPersonCharacter::MoveForward(float Value)
 {
-	if ((Controller != NULL) && (Value != 0.0f))
+	if ((Controller != nullptr) && (Value != 0.0f))
 	{
 		// find out which way is forward
 		const FRotator Rotation = Controller->GetControlRotation();
@@ -133,58 +124,17 @@ void APzzzleCharacter::MoveForward(float Value)
 	}
 }
 
-void APzzzleCharacter::MoveRight(float Value)
+void ATP_ThirdPersonCharacter::MoveRight(float Value)
 {
-	if ((Controller != NULL) && (Value != 0.0f))
+	if ( (Controller != nullptr) && (Value != 0.0f) )
 	{
 		// find out which way is right
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
-
+	
 		// get right vector 
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 		// add movement in that direction
 		AddMovementInput(Direction, Value);
 	}
-};
-
-void APzzzleCharacter::OnEsc()
-{
-	if (this->Is==false)
-	{
-		APlayerController* PlayerController_ = GetWorld()->GetFirstPlayerController();
-		if (PlayerController_)
-		{
-			PlayerController_->bShowMouseCursor = true;
-			FInputModeUIOnly mode;
-			PlayerController_->SetInputMode(mode);
-			if (Widget)Widget->AddToViewport();
-		};
-		this->Is = true;
-	}
-	else
-	{
-		if (Widget)
-		{
-			Widget->RemoveFromViewport();
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Widget==nullptr"))
-		};
-
-		this->Is = false;
-	}
-
-
-};
-
-void APzzzleCharacter::RemoveInGameMenu()const
-{
-	if (this->Widget != nullptr)
-	{
-		Widget->RemoveFromViewport();
-	};
-};
-
-
+}
