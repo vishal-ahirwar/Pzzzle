@@ -15,7 +15,7 @@
 UMainMenu::UMainMenu(const FObjectInitializer&Object):Super(Object)
 {
 
-	ConstructorHelpers::FClassFinder<UUserWidget> ServerWidgetClass(TEXT("'/Game/UI/MenuSystem/WP_Server'"));
+	ConstructorHelpers::FClassFinder<UUserWidget> ServerWidgetClass(TEXT("'/Game/Widget/WBP_Server'"));
 	if (ServerWidgetClass.Class)this->ServerWidget = ServerWidgetClass.Class;
 };
 
