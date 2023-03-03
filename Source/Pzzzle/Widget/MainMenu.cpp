@@ -28,8 +28,8 @@ bool UMainMenu::Initialize()
 	if(this->Host!=nullptr)
 	this->Host->OnClicked.AddDynamic(this,&UMainMenu::OnHost);
 
-	if (this->Join != nullptr)
-		this->Join->OnClicked.AddDynamic(this,&UMainMenu::OpenJoinMenu);
+	if (this->BtnOpenJoinMenu != nullptr)
+		this->BtnOpenJoinMenu->OnClicked.AddDynamic(this,&UMainMenu::OpenJoinMenu);
 
 	//if (this->Quit != nullptr)
 	//	this->Quit->OnClicked.AddDynamic(this, &UMainMenu::OnQuit);
@@ -37,12 +37,16 @@ bool UMainMenu::Initialize()
 	if (this->Back != nullptr)
 		this->Back->OnClicked.AddDynamic(this, &UMainMenu::OnBack);
 
-	if (this->Join_1 != nullptr)
-		this->Join_1->OnClicked.AddDynamic(this, &UMainMenu::JoinServer);
+	if (this->BtnJoinServer != nullptr)
+		this->BtnJoinServer->OnClicked.AddDynamic(this, &UMainMenu::JoinServer);
 
 	if (this->QuitGame != nullptr)
 		this->QuitGame->OnClicked.AddDynamic(this, &UMainMenu::FQuit);
 
+	if(this->bVoiceChat)
+	{
+		this->bVoiceChat->OnClicked.AddDynamic(this,&UMainMenu::ToggleVoiceChat);
+	};
 	return true;
 };
 
@@ -86,17 +90,17 @@ void UMainMenu::OnBack()
 
 void UMainMenu::SetServerList(const TArray<FString>& ServerNames)
 {
-	this->ServerList->ClearChildren();
-	for (const FString& Name : ServerNames)
-	{
-		UServerRow* ServerWid = CreateWidget<UServerRow>(this, this->ServerWidget);
-		if (ServerWid)
-		{
-			ServerWid->Text->SetText(FText::FromString(Name));
-			this->ServerList->AddChild(ServerWid);
-		};
+	// this->ServerList->ClearChildren();
+	// for (const FString& Name : ServerNames)
+	// {
+	// 	UServerRow* ServerWid = CreateWidget<UServerRow>(this, this->ServerWidget);
+	// 	if (ServerWid)
+	// 	{
+	// 		ServerWid->Text->SetText(FText::FromString(Name));
+	// 		this->ServerList->AddChild(ServerWid);
+	// 	};
 
-	};
+	// };
 
 }
 void UMainMenu::JoinServer()
@@ -104,20 +108,20 @@ void UMainMenu::JoinServer()
 	//if (this->ip == nullptr)return;
 	//ConstructorHelpers::FClassFinder<UUserWidget> ServerWidgetClass(TEXT("'/Game/UI/MenuSystem/WP_Server'"));
 	//if (ServerWidgetClass.Class)this->ServerWidget = ServerWidgetClass.Class;
-	if (this->ServerWidget)
-	{
-		UServerRow*Widget = CreateWidget<UServerRow>(GetWorld(),ServerWidget);
-		this->ServerList->ClearChildren();
-		if (Widget)
-		{
-			Widget->Text->SetText(FText::FromString("Searching ..."));
-			ServerList->AddChild(Widget);
-		}
+	// if (this->ServerWidget)
+	// {
+	// 	UServerRow*Widget = CreateWidget<UServerRow>(GetWorld(),ServerWidget);
+	// 	this->ServerList->ClearChildren();
+	// 	if (Widget)
+	// 	{
+	// 		Widget->Text->SetText(FText::FromString("Searching ..."));
+	// 		ServerList->AddChild(Widget);
+	// 	}
 
-	}
+	// }
 	if (this->MenuInterface == nullptr)return;
 
-	this->MenuInterface->Join(/*this->ip->GetText().ToString()*/"");
+	this->MenuInterface->Join(this->ip->GetText().ToString());
 	//UE_LOG(LogTemp,Warning,TEXT("Joining server at address %s"),*ip->GetText().ToString())
 };
 
@@ -125,4 +129,24 @@ void UMainMenu::FQuit()
 {
 	UE_LOG(LogTemp, Error, TEXT("FQuit Pressed!"))
 		GetGameInstance()->GetFirstLocalPlayerController()->ConsoleCommand(TEXT("quit"));
+}
+
+void UMainMenu::ToggleVoiceChat()
+{
+	FText text{};
+	if(this->bVoiceChatEnabled){
+		bVoiceChatEnabled=false;
+		text=FText::FromString("Off");
+	}
+	{
+		bVoiceChatEnabled=true;
+		text=FText::FromString("ON");
+	};
+	this->VCStatus->SetText(text);
+	UE_LOG(LogTemp,Error,TEXT("Voice Chat Status : %s"),*this->VCStatus->GetText().ToString())
+	APlayerController*PlayerController=GetWorld()->GetFirstPlayerController();
+	if(PlayerController)
+	{
+		PlayerController->ToggleSpeaking(this->bVoiceChatEnabled);
+	};
 };

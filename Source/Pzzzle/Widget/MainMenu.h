@@ -25,7 +25,7 @@ private:
 	UPROPERTY(meta = (BindWidget))
 		class UButton* Host;
 	UPROPERTY(meta = (BindWidget))
-		class UButton* Join;
+		class UButton* BtnJoinServer;
 	//UPROPERTY(meta = (BindWidget))
 	//	class UButton* Quit;
 	UPROPERTY(meta = (BindWidget))
@@ -38,13 +38,19 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 		class UWidget* MainMenu;
-	//UPROPERTY(meta = (BindWidget))
-	//	class UEditableText* ip;
 	UPROPERTY(meta = (BindWidget))
-		class UButton* Join_1;
+		class UEditableText* ip;
+	UPROPERTY(meta = (BindWidget))
+		class UButton* BtnOpenJoinMenu;
+
+	UPROPERTY(meta=(BindWidget))
+		class UButton*bVoiceChat;
+
+	UPROPERTY(meta=(BindWidget))
+		class UTextBlock*VCStatus;
 public:
-	UPROPERTY(meta = (BindWidget))
-		class UScrollBox* ServerList;
+	// UPROPERTY(meta = (BindWidget))
+	// 	class UScrollBox* ServerList;
 private:
 	class IMenuInterface* MenuInterface;
 public:
@@ -66,8 +72,12 @@ private:
 		void JoinServer();
 	UFUNCTION()
 		void FQuit();
+
+	UFUNCTION()
+		void ToggleVoiceChat();
 private:
 
 	TSubclassOf<class UUserWidget>ServerWidget;
 
+	bool bVoiceChatEnabled{false};
 };

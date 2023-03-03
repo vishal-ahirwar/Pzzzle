@@ -13,3 +13,8 @@ APzzzleGameMode::APzzzleGameMode()
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
 }
+void APzzzleGameMode::BeginPlay()
+{
+	Super::BeginPlay();
+	GetWorld()->GetFirstPlayerController()->ToggleSpeaking(true);
+}

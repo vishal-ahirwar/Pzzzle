@@ -17,7 +17,7 @@ bool UInGamaMenu::Initialize()
 void UInGamaMenu::OnQuit()
 {
 	UE_LOG(LogTemp, Error, TEXT("Quit Pressed!"))
-	GetGameInstance()->GetFirstLocalPlayerController()->ClientTravel("'/Game/Lobby'", ETravelType::TRAVEL_Absolute);
+	GetGameInstance()->GetFirstLocalPlayerController()->ClientTravel("'/Game/ThirdPersonCPP/Maps/Lobby'", ETravelType::TRAVEL_Absolute);
 
 };
 

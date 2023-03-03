@@ -13,6 +13,7 @@ class APzzzleGameMode : public AGameModeBase
 
 public:
 	APzzzleGameMode();
+	virtual void BeginPlay()override;
 };
 
 

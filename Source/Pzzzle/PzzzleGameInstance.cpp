@@ -105,7 +105,9 @@ void UPzzzleGameInstance::Join(const FString &Address)
 	FInputModeGameOnly Mode;
 	Mode.SetConsumeCaptureMouseDown(true);
 	PlayerController->SetInputMode(Mode);
+	GetFirstLocalPlayerController()->ToggleSpeaking(true);
 	PlayerController->ClientTravel(Address, ETravelType::TRAVEL_Absolute);
+
 	if (Engine)
 		Engine->AddOnScreenDebugMessage(0, 2.5f, FColor::Green, (Address));
 };
@@ -162,7 +164,8 @@ void UPzzzleGameInstance::OnCreateSessionComplete(FName SessionName, bool Succes
 	FInputModeGameOnly Mode;
 	Mode.SetConsumeCaptureMouseDown(true);
 	GetFirstLocalPlayerController()->SetInputMode(Mode);
-	World->ServerTravel("/Game/ThirdPersonCPP/Maps/Lobby?listen");
+	World->ServerTravel("/Game/ThirdPersonCPP/Maps/ThirdPersonExampleMap?listen");
+	
 };
 
 void UPzzzleGameInstance::CreateSession()
